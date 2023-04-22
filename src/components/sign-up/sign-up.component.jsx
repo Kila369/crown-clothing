@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import "./sing-up.styles.scss";
+import "./sign-up.styles.scss";
 
 import {
   createAuthUserWithEmailAndPassword,
@@ -17,7 +17,7 @@ const defaultFormFields = {
   confirmPassword: "",
 };
 
-const SingUp = () => {
+const SignUp = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formFields;
 
@@ -36,6 +36,7 @@ const SingUp = () => {
         email,
         password
       );
+
       await createUserDocumentFromAuth(user, { displayName });
       resetFormFields();
     } catch (error) {
@@ -54,7 +55,7 @@ const SingUp = () => {
   return (
     <div className="sing-up-container">
       <h2>Don't have an account?</h2>
-      <span>Sing up with your email and password.</span>
+      <span>Sign Up with your email and password.</span>
       <form onSubmit={handleSubmit}>
         <FormInput
           label="Display Name"
@@ -92,10 +93,10 @@ const SingUp = () => {
           value={confirmPassword}
         />
 
-        <Button type="submit">Sing Up</Button>
+        <Button type="submit">Sign Up</Button>
       </form>
     </div>
   );
 };
 
-export default SingUp;
+export default SignUp;
