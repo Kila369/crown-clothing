@@ -10,15 +10,24 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  writeBatch,
+  query,
+  getDocs,
+} from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBcR-M6IUJJnObfCIXcDcLt9ojYlJnpO78",
-  authDomain: "crown-clothing-db-c2166.firebaseapp.com",
-  projectId: "crown-clothing-db-c2166",
-  storageBucket: "crown-clothing-db-c2166.appspot.com",
-  messagingSenderId: "614869881162",
-  appId: "1:614869881162:web:43105e2875f44faf7bb1b3",
+  apiKey: "AIzaSyB0y5OUMF1-_7XsN6r00YpDAjb6qJcKl0U",
+  authDomain: "crown-clothing-99433.firebaseapp.com",
+  projectId: "crown-clothing-99433",
+  storageBucket: "crown-clothing-99433.appspot.com",
+  messagingSenderId: "302415550225",
+  appId: "1:302415550225:web:783ebc3b542725add2deb0",
 };
 
 // eslint-disable-next-line no-unused-vars
@@ -37,6 +46,38 @@ export const signInWithGoogleRedirect = () =>
   signInWithRedirect(auth, provider);
 
 export const db = getFirestore();
+
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  const collectionRef = collection(db, collectionKey);
+
+  const batch = writeBatch(db);
+
+  objectsToAdd.forEach((object) => {
+    const docRef = doc(collectionRef, object.title.toLowerCase());
+    batch.set(docRef, object);
+  });
+
+  await batch.commit();
+  console.log("done");
+};
+
+export const getCategoriesAndDocuments = async () => {
+  const collectionRef = collection(db, "categories");
+
+  const q = query(collectionRef);
+
+  const querySnapshot = await getDocs(q);
+  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+    const { title, items } = docSnapshot.data();
+    acc[title.toLowerCase()] = items;
+    return acc;
+  }, {});
+
+  return categoryMap;
+};
 
 export const createUserDocumentFromAuth = async (
   userAuth,
@@ -72,7 +113,7 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
   return response;
 };
 
-export const singInAuthUserWithEmailAndPassword = async (email, password) => {
+export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
 
   const response = await signInWithEmailAndPassword(auth, email, password);
